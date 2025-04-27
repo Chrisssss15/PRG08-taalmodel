@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 
 export default function App() {
   const [message, setMessage] = useState("");
-  const [chat, setChat] = useState([]); // {sender: "user"|"bot", text: "msg"}
+  const [chat, setChat] = useState([]);
   const [fetchedPokemons, setFetchedPokemons] = useState([]);
   const [currentPokemon, setCurrentPokemon] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const chatBoxRef = useRef(null);
+  
 
   // Scroll automatisch naar beneden bij nieuw bericht
   useEffect(() => {
@@ -27,19 +29,30 @@ export default function App() {
 
   // Stuur vraag naar backend
   async function askQuestion(e) {
+    const updatedChat = [...chat, { role: "user", content: message }];
+
+    
     e.preventDefault();
-    if (!message.trim()) return;
-    setChat(prev => [...prev, { sender: "user", text: message }]);
+
+    if (!message.trim() || isLoading) return; // voorkom dubbele submits
+    setIsLoading(true);
+
+    // setChat(prev => [...prev, { sender: "user", text: message }]);
+
     const res = await fetch("http://localhost:3000/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: message })
+      body: JSON.stringify({ chatHistory: updatedChat })
     });
-    const data = await res.json();
-    setChat(prev => [...prev, { sender: "bot", text: data.message }]);
-    setMessage("");
-  }
 
+        const data = await res.json();
+
+    setChat([...updatedChat, { role: "assistant", content: data.message }]);
+    setMessage("");
+    setTimeout(() => {
+      setIsLoading(false); 
+    }, 500);
+  }
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-blue-100 to-white flex items-center justify-center">
       <div className="w-full max-w-2xl h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
@@ -76,31 +89,33 @@ export default function App() {
             <div
               key={idx}
               className={`mb-3 max-w-[70%] px-4 py-2 rounded-2xl text-base break-words 
-                ${msg.sender === "user"
+                ${msg.role === "user"
                   ? "bg-blue-500 text-white ml-auto rounded-br-md"
                   : "bg-gray-200 text-gray-900 mr-auto rounded-bl-md"
                 }`}
             >
-              <b>{msg.sender === "user" ? "You" : "Bot"}:</b> {msg.text}
+              <b>{msg.role === "user" ? "You" : "Bot"}:</b> {msg.content}
             </div>
           ))}
         </div>
-        {/* Input veld */}
+
         <form
           onSubmit={askQuestion}
           className="flex items-center border-t px-4 py-3 bg-white"
         >
-          <input
+         <input
             value={message}
             onChange={e => setMessage(e.target.value)}
             className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 mr-2"
             placeholder="Type your question here..."
+            disabled={isLoading}
           />
           <button
             type="submit"
             className="bg-blue-500 text-white rounded-full px-6 py-2 font-semibold shadow hover:bg-blue-600 transition"
+            disabled={isLoading || message.trim() === ""} // knop uit als loading
           >
-            Submit
+            {isLoading ? "Even wachten..." : "Submit"}
           </button>
         </form>
       </div>

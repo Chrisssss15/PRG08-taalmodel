@@ -40,7 +40,7 @@ export default function App() {
     const res = await fetch("http://localhost:3000/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chatHistory: updatedChat })
+      body: JSON.stringify({ chatHistory: updatedChat }) // chatgeschiedenis wordt meegestuurd
     });
 
         const data = await res.json();
@@ -60,7 +60,7 @@ export default function App() {
             className="bg-blue-500 text-white rounded-full px-4 py-2 font-semibold shadow hover:bg-blue-600 transition"
             onClick={fetchRandomPokemon}
           >
-            Random Pokémon
+            Fetch Pokémon
           </button>
           <div className="text-sm ml-4 text-gray-700">
             {currentPokemon
@@ -113,7 +113,7 @@ export default function App() {
             className="bg-blue-500 text-white rounded-full px-6 py-2 font-semibold shadow hover:bg-blue-600 transition"
             disabled={isLoading || message.trim() === ""} // knop uit als loading
           >
-            {isLoading ? "Even wachten..." : "Submit"}
+            {isLoading ? "Even wachten..." : "Send"}
           </button>
         </form>
       </div>

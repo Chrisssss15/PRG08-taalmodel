@@ -16,7 +16,7 @@ let vectorStore = await FaissStore.load("textVectorDB", new AzureOpenAIEmbedding
 }));
 
 const model = new AzureChatOpenAI({
-  temperature: 0.2,
+  temperature: 0.2, //geeft de betrouwbaarheid aan van de antwoorden
 });
 
 // Functie om een nieuwe random Pokémon te fetchen en aan de lijst toe te voegen
@@ -66,7 +66,7 @@ async function sendPrompt(context, prompt) {
       `],
     ["user", `context: ${context}, question: ${prompt}`]
   ];
-  const response = await model.invoke(messages);
+  const response = await model.invoke(messages); // Return een gestructureerde response
   return response.content;
 }
 

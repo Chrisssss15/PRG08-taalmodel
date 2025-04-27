@@ -16,16 +16,16 @@ const embeddings = new AzureOpenAIEmbeddings({ //azure gebruiken om embeddings t
 //const vectorTest = await embeddings.embedQuery("the hamster ate too many nuts"); 
 // console.log(vectorTest);
 
-async function loadHamsterStory(){
+async function loadStory(){
   const loader = new TextLoader("./public/text.txt"); // haalt info uit een text file
-  const docs = await loader.load();
+  const docs = await loader.load(); // laadt de tekst in
   const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize: 450,
     chunkOverlap: 200
   });
-  const splitDocs = await textSplitter.splitDocuments(docs);
+  const splitDocs = await textSplitter.splitDocuments(docs); // splitst de tekst in stukken
   console.log(`I created ${splitDocs.length} text chunks`);
-  vectorStore = await FaissStore.fromDocuments(splitDocs, embeddings);
+  vectorStore = await FaissStore.fromDocuments(splitDocs, embeddings); // slaat de vector store op
   await vectorStore.save("textVectorDB"); // slaat de vector store op in db
   console.log('Vector store created');
 }

@@ -13,7 +13,7 @@ Dit project is een taalmodel gericht op Pokémon. Je kunt via een API Pokémon-d
 
 - **Clone het project**:
     ```bash
-    git clone [hier-je-eigen-github-url]
+    git remote add origin https://github.com/Chrisssss15/PRG08-taalmodel.git
     ```
     *(Of pak het ZIP-bestand uit en open de hoofdmap in je editor)*
 

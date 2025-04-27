@@ -8,7 +8,7 @@ const model = new AzureChatOpenAI({ temperature: 1 });
 
 let vectorStore;
 
-const embeddings = new AzureOpenAIEmbeddings({
+const embeddings = new AzureOpenAIEmbeddings({ //azure gebruiken om embeddings te maken
   // temperature: 0,
   azureOpenAIApiEmbeddingsDeploymentName: process.env.AZURE_EMBEDDING_DEPLOYMENT_NAME
 });
@@ -17,7 +17,7 @@ const embeddings = new AzureOpenAIEmbeddings({
 // console.log(vectorTest);
 
 async function loadHamsterStory(){
-  const loader = new TextLoader("./public/text.txt");
+  const loader = new TextLoader("./public/text.txt"); // haalt info uit een text file
   const docs = await loader.load();
   const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize: 450,
@@ -26,7 +26,7 @@ async function loadHamsterStory(){
   const splitDocs = await textSplitter.splitDocuments(docs);
   console.log(`I created ${splitDocs.length} text chunks`);
   vectorStore = await FaissStore.fromDocuments(splitDocs, embeddings);
-  await vectorStore.save("textVectorDB");
+  await vectorStore.save("textVectorDB"); // slaat de vector store op in db
   console.log('Vector store created');
 }
 
@@ -47,5 +47,5 @@ async function loadHamsterStory(){
 //   console.log(response.content);
 // }
 
-await loadHamsterStory();
+// await loadHamsterStory();
 // await askQuestion("who is the hero of this story?");

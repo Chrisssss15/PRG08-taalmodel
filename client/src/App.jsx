@@ -5,7 +5,7 @@ export default function App() {
   const [chat, setChat] = useState([]);
   const [fetchedPokemons, setFetchedPokemons] = useState([]);
   const [currentPokemon, setCurrentPokemon] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // pas een nieuwe prompt als de vorige is afgerond
   const chatBoxRef = useRef(null);
   
 
@@ -20,7 +20,7 @@ export default function App() {
   async function fetchRandomPokemon() {
     const res = await fetch("http://localhost:3000/generatePokemon", { method: "POST" });
     const data = await res.json();
-    setChat(prev => [...prev, { sender: "bot", text: data.message }]);
+    setChat(prev => [...prev, { role: "bot", text: data.message }]);
     if (data.pokemons) {
       setFetchedPokemons(data.pokemons);
       setCurrentPokemon(data.pokemons[data.pokemons.length - 1]);
@@ -37,8 +37,6 @@ export default function App() {
     if (!message.trim() || isLoading) return; // voorkom dubbele submits
     setIsLoading(true);
 
-    // setChat(prev => [...prev, { sender: "user", text: message }]);
-
     const res = await fetch("http://localhost:3000/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,7 +45,7 @@ export default function App() {
 
         const data = await res.json();
 
-    setChat([...updatedChat, { role: "assistant", content: data.message }]);
+    setChat([...updatedChat, { role: "assistant", content: data.message }]); // hier komt de antwoord van de bot
     setMessage("");
     setTimeout(() => {
       setIsLoading(false); 
@@ -105,7 +103,7 @@ export default function App() {
         >
          <input
             value={message}
-            onChange={e => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)} // de vraag die je stelt wordt hier naar de server gestuurd
             className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 mr-2"
             placeholder="Type your question here..."
             disabled={isLoading}

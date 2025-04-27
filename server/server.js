@@ -1,17 +1,17 @@
-import { AzureChatOpenAI, AzureOpenAIEmbeddings } from "@langchain/openai";
+import { AzureChatOpenAI, AzureOpenAIEmbeddings } from "@langchain/openai"; //
 import express from "express";
 import cors from "cors";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import fetch from 'node-fetch';
 
 const app = express();
-let fetchedPokemons = []; // Hier bewaren we ALLE gefetchte Pokémon
+let fetchedPokemons = []; // hier worden ALLE gefetche Pokémon in opgeslagen
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-let vectorStore = await FaissStore.load("textVectorDB", new AzureOpenAIEmbeddings({
+let vectorStore = await FaissStore.load("textVectorDB", new AzureOpenAIEmbeddings({ //informatie ophalen dmv azure openAI uit mijn locale db
   azureOpenAIApiEmbeddingsDeploymentName: process.env.AZURE_EMBEDDING_DEPLOYMENT_NAME
 }));
 
@@ -22,7 +22,7 @@ const model = new AzureChatOpenAI({
 // Functie om een nieuwe random Pokémon te fetchen en aan de lijst toe te voegen
 const fetchPokemonData = async () => {
   try {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10'); //live data ophalen
     if (!response.ok) {
       throw new Error(`API responded with status ${response.status}`);
     }
@@ -70,13 +70,13 @@ async function sendPrompt(context, prompt) {
   return response.content;
 }
 
-// Endpoint om een Pokémon te fetchen
+// Pokemon fetchen
 app.post('/generatePokemon', async (req, res) => {
   try {
     const pokemon = await fetchPokemonData();
     if (pokemon) {
       res.status(200).json({
-        message: `Fetch a new pokemon: ${pokemon.name}`,
+        message: `Fetched pokemons: ${pokemon.name}`,
         pokemons: fetchedPokemons // Geef lijstje terug aan frontend als je wilt
       });
     } else {
@@ -88,16 +88,14 @@ app.post('/generatePokemon', async (req, res) => {
   }
 });
 
-// Endpoint om een vraag te stellen
+// Chatbot
 app.post("/ask", async (req, res) => { 
   await new Promise(r => setTimeout(r, 2000)); // <-- 2 seconden pauze
-  // let prompt = req.body.prompt.toLowerCase();
   const chatHistory = req.body.chatHistory || [];
 
   const lastUserMsg = [...chatHistory].reverse().find(m => m.role === "user");
-let prompt = lastUserMsg ? lastUserMsg.content.toLowerCase() : "";
+  let prompt = lastUserMsg ? lastUserMsg.content.toLowerCase() : "";
 
-  // console.log("DEBUG: fetchedPokemons =", fetchedPokemons); // <-- toevoegen!
   // 1. Check of er iets is gefetched
   if (fetchedPokemons.length === 0) {
     return res.json({ message: "Please fetch a Pokémon first!" });
@@ -124,7 +122,7 @@ let prompt = lastUserMsg ? lastUserMsg.content.toLowerCase() : "";
   const context = await getPokemonContext(foundPokemon);
 
   // 4. Geef context en prompt door aan model
-  let result = await sendPrompt(context, prompt); // Await toegevoegd om meerdere call s te voorkomen
+  let result = await sendPrompt(context, prompt); // Await toegevoegd om meerdere calls te voorkomen
   res.json({ message: result });
 });
 

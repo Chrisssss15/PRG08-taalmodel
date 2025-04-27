@@ -1,16 +1,11 @@
 # Pokémon Taalmodel
 
-Dit project is een taalmodel gericht op Pokémon. Je kunt via een API Pokémon-data ophalen ("fetchen") en vervolgens vragen stellen over deze data.
+Dit project is een taalmodel gericht op Pokémon. Je kunt via een API Pokémon-data ophalen ("fetchen") en vervolgens vragen stellen over deze data. Het project bestaat uit een backend (Node.js + Express + LangChain) en een frontend (React + Vite + Tailwind).
 
 ## Features
 
 - **Pokémon-data fetchen:** Haal data op via een externe API.
 - **Vragen stellen:** Stel vragen over de gefetchte data met behulp van het taalmodel.
-
-
-# Taalmodel Schoolopdracht - Installatiehandleiding
-
-Deze installatiehandleiding beschrijft hoe je dit taalmodel-project opzet en uitvoert op je eigen computer. Het project bestaat uit een backend (Node.js + Express + LangChain) en een frontend (React + Vite + Tailwind). Ook vind je hier een overzicht van de belangrijkste functies, bekende problemen en tips voor verdere ontwikkeling.
 
 ---
 
